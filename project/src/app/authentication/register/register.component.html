@@ -4,7 +4,7 @@
     </div>
     <div class="container">
         <div class="photoContainer">
-            <img src="./register.png" alt="two people with bags">
+            <img src="../../../assets/images/register.png" alt="two people with bags" class="registerbackground">
         </div>
         <div class="registercontainer">
             <div class="title">Register</div>
@@ -15,8 +15,11 @@
                     [class.redborder]="!emailbool" />
                 <input te="text" placeholder="password(minimum 8 characters)" formControlName="password"
                     (change)="changepasswordbool()" [class.redborder]="!passwordbool" />
+                <p>already have an account? <a [routerLink]="['/login']" routerLinkActive="router-link-active">Login</a>
+                </p>
                 <button placeholder=" username" [disabled]="!registerForm.valid"
-                    [class.disableButton]="!registerForm.valid">REGISTER</button>
+                    [style.background]="!registerForm.valid?'gray':'linear-gradient(180deg, #3F210E 13.02%, #592A0C 84.37%)'">REGISTER
+                </button>
             </form>
         </div>
     </div>

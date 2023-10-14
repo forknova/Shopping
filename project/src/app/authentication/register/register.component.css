@@ -7,13 +7,21 @@
     height: calc(90vh - 90px);
 }
 
+.registerbackground {
+    width: 100%;
+    height: 100%;
+}
+
 .photoContainer {
     width: 50%;
-    height: 10px;
+    height: 100%;
+    margin-right: 30px;
+    max-height: 600px;
 }
 
 .registercontainer {
     width: 50%;
+    max-height: 600px;
     border-radius: 18px;
     background: #FFF;
     box-shadow: 0px 4px 8px 0px #000;
@@ -54,14 +62,18 @@ form {
 
 }
 
-form>* {
+form>input,
+button {
     color: #3F210E;
     border-radius: 42px;
-    background: #FFE3BB;
     box-shadow: inset 0px 0px 29px 0px rgba(44, 44, 44, 0.27);
     width: 90%;
     margin: auto;
     height: 50px
+}
+
+form>input {
+    background: #FFE3BB;
 }
 
 .redborder {
@@ -69,7 +81,7 @@ form>* {
 }
 
 .disableButton {
-    background-color: gray;
+    background: gray;
 }
 
 input::placeholder {
@@ -93,6 +105,11 @@ input {
     line-height: normal;
 }
 
+form>p {
+    width: calc(90% - 40px);
+    margin: auto;
+}
+
 form>button {
     font-style: normal;
     font-size: medium;
@@ -102,6 +119,7 @@ form>button {
     text-transform: capitalize;
     color: #FFE3BB;
     margin: 50px auto;
+    margin-top: 10px;
     background: linear-gradient(180deg, #3F210E 13.02%, #592A0C 84.37%);
     backdrop-filter: blur(2px);
 }
