@@ -1,0 +1,107 @@
+.container {
+    width: calc(100% - 80px);
+    max-width: 800px;
+    margin: auto;
+    display: flex;
+    margin-top: 50px;
+    height: calc(90vh - 90px);
+}
+
+.photoContainer {
+    width: 50%;
+    height: 10px;
+}
+
+.registercontainer {
+    width: 50%;
+    border-radius: 18px;
+    background: #FFF;
+    box-shadow: 0px 4px 8px 0px #000;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    color: #3F210E;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    font-family: Amatic SC;
+    font-size: 50px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.title {
+    color: #3F210E;
+    font-family: Inter;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    height: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+}
+
+form>* {
+    color: #3F210E;
+    border-radius: 42px;
+    background: #FFE3BB;
+    box-shadow: inset 0px 0px 29px 0px rgba(44, 44, 44, 0.27);
+    width: 90%;
+    margin: auto;
+    height: 50px
+}
+
+.redborder {
+    border: 1px solid red;
+}
+
+.disableButton {
+    background-color: gray;
+}
+
+input::placeholder {
+    color: rgb(65, 65, 65);
+    font-size: large;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: capitalize;
+}
+
+input {
+    box-sizing: border-box;
+    color: #3F210E;
+    font-size: large;
+    padding-left: 20px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+form>button {
+    font-style: normal;
+    font-size: medium;
+    letter-spacing: 1px;
+    font-weight: 600;
+    line-height: normal;
+    text-transform: capitalize;
+    color: #FFE3BB;
+    margin: 50px auto;
+    background: linear-gradient(180deg, #3F210E 13.02%, #592A0C 84.37%);
+    backdrop-filter: blur(2px);
+}

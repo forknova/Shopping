@@ -1,0 +1,23 @@
+<div class="">
+    <div class="logo">
+        ShoppingCenter
+    </div>
+    <div class="container">
+        <div class="photoContainer">
+            <img src="./register.png" alt="two people with bags">
+        </div>
+        <div class="registercontainer">
+            <div class="title">Register</div>
+            <form [formGroup]="registerForm" (ngSubmit)="onsubmit()">
+                <input type="text" placeholder="full name" formControlName="name" (change)="changenamebool()"
+                    [class.redborder]="!namebool" />
+                <input type="text" placeholder="email" formControlName="email" (change)="changeemailbool()"
+                    [class.redborder]="!emailbool" />
+                <input te="text" placeholder="password(minimum 8 characters)" formControlName="password"
+                    (change)="changepasswordbool()" [class.redborder]="!passwordbool" />
+                <button placeholder=" username" [disabled]="!registerForm.valid"
+                    [class.disableButton]="!registerForm.valid">REGISTER</button>
+            </form>
+        </div>
+    </div>
+</div>
