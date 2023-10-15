@@ -43,6 +43,8 @@
 }
 
 .title {
+    display: flex;
+    flex-direction: column;
     color: #3F210E;
     font-family: Inter;
     font-size: 40px;
@@ -54,6 +56,12 @@
     align-items: center;
     justify-content: center;
 }
+
+.title>div {
+    font-size: small;
+    color: red;
+}
+
 
 form {
     display: flex;
@@ -122,4 +130,30 @@ form>button {
     margin-top: 10px;
     background: linear-gradient(180deg, #3F210E 13.02%, #592A0C 84.37%);
     backdrop-filter: blur(2px);
+}
+
+@media (max-width:750px) {
+    .photoContainer {
+        display: none;
+    }
+
+    .registercontainer {
+        margin: auto;
+        height: 100%;
+        width: 60%;
+    }
+}
+
+@media (max-width:500px) {
+    .registercontainer {
+        width: 90%;
+    }
+
+    .logo {
+        font-size: 36px;
+    }
+
+    .title {
+        font-size: 33px;
+    }
 }

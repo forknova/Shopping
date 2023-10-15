@@ -4,10 +4,13 @@
     </div>
     <div class="container">
         <div class="photoContainer">
-            <img src="../../../assets/images/register.png" alt="two people with bags" class="registerbackground">
+            <img src="../../../assets/images/register.png" alt="two people with bags" class="registerbackground"
+                loading="lazy">
         </div>
         <div class="registercontainer">
-            <div class="title">Register</div>
+            <div class="title">Register
+                <div *ngIf="message">{{message}}</div>
+            </div>
             <form [formGroup]="registerForm" (ngSubmit)="onsubmit()">
                 <input type="text" placeholder="full name" formControlName="name" (change)="changenamebool()"
                     [class.redborder]="!namebool" />
