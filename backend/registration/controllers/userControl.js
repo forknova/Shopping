@@ -10,10 +10,10 @@ const register = async (req,res) => {
           const success = await userService.register(fullname, email, hash);
           
           if(success == "done"){
-          res.status(201).send("Added Successfully");}
+          res.status(201).send(true);}
           else if (success == "email already used"){
             
-              res.send("email already used")
+              res.send(false)
           }
           else{
               res.status(500);
