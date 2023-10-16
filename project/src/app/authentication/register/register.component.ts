@@ -19,7 +19,7 @@ export class RegisterComponent {
   })
   onsubmit() {
     if (this.registerForm.get('name')?.valid && this.registerForm.get('email')?.valid && this.registerForm.get('password')?.valid) {
-      this.http.post("url", this.registerForm.value)
+      this.http.post("http://localhost:4000/", this.registerForm.value)
         .subscribe({
           next: (bool) => bool ? this.message = "account created successfully!" : this.message = "email already registered",
           error: () => this.message = "Error accured while creating your account"

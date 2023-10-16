@@ -19,7 +19,7 @@ export class LoginComponent {
   })
   onsubmit() {
     if (this.registerForm.get('email')?.valid && this.registerForm.get('password')?.valid) {
-      this.http.post("url", this.registerForm.value)
+      this.http.post("http://localhost:4200/", this.registerForm.value)
         .subscribe({
           next: (bool) => bool ? this.router.navigateByUrl("/homepage") : this.message = "email/password combo is incorrect",
           error: () => this.message = "Error accured while logging you in"
