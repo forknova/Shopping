@@ -1,0 +1,125 @@
+<div *ngIf="addProductToggle" class="add-container">
+    <button class="black-button color-btn" (click)="colorBools.black=!colorBools.black"></button>
+    <button class="white-button color-btn" (click)="colorBools.white=!colorBools.white"></button>
+    <button class="green-button color-btn" (click)="colorBools.green=!colorBools.green"></button>
+    <button class="red-button color-btn" (click)="colorBools.red=!colorBools.red"></button>
+    <button class="blue-button color-btn" (click)="colorBools.blue=!colorBools.blue"></button>
+    <table>
+        <div class="result" *ngIf="AddProductresult">
+            {{AddProductresult2?'product added successfully':'error occured white adding product'}}
+        </div>
+        <tr>
+            <td>Productname:<input #ProductName type="text" />
+            </td>
+            <td>Price:<input #Price type="number" />
+                Photo:<input type="file" (change)="onFileUpload($event)" />
+            </td>
+            <td>
+                category:<select #category>
+                    <option *ngFor="let item of categories" [value]="item">{{item}}</option>
+                </select>
+            </td>
+            <td>gender:<select #gender>
+                    <option>men</option>
+                    <option>women</option>
+                </select>
+
+            </td>
+            <td><button (click)="Add(ProductName.value,category.value,gender.value,Price.value,adminId)">Add</button>
+            </td>
+        </tr>
+        <tr>
+            <th>Color </th>
+            <th>Small</th>
+            <th>medium</th>
+            <th>large</th>
+            <th>XL</th>
+        </tr>
+        <tr *ngIf="colorBools.black">
+            <td [style.background-color]="'black'"></td>
+            <td><input #black_s type="number" [value]='black.s' (change)="black.s=Number(black_s.value)" /></td>
+            <td><input #black_m type="number" [value]='black.m' (change)="black.m=(black_m.value)" /></td>
+            <td><input #black_l type="number" [value]='black.l' (change)="black.l=(black_l.value)" /></td>
+            <td><input #black_xl type="number" [value]='black.xl' (change)="black.xl=(black_xl.value)" /></td>
+
+        </tr>
+        <tr *ngIf=" colorBools.white">
+            <td [style.background-color]="'white'"></td>
+            <td><input #white_s type="number" [value]="white.s" (change)="white.s=(white_s.value)" /></td>
+            <td><input #white_m type="number" [value]="white.m" (change)="white.m=(white_m.value)" /></td>
+            <td><input #white_l type="number" [value]="white.l" (change)="white.l=(white_l.value)" /></td>
+            <td><input #white_xl type="number" [value]="white.xl" (change)="white.xl=(white_xl.value)" /></td>
+
+        </tr>
+        <tr *ngIf=" colorBools.red">
+            <td [style.background-color]="'red'"></td>
+            <td><input #red_s type="number" [value]="red.s" (change)="red.s=(red_s.value)" /></td>
+            <td><input #red_m type="number" [value]="red.m" (change)="red.m=(red_m.value)" /></td>
+            <td><input #red_l type="number" [value]="red.l" (change)="red.l=(red_l.value)" /></td>
+            <td><input #red_xl type="number" [value]="red.xl" (change)="red.xl=(red_xl.value)" /></td>
+
+        </tr>
+        <tr *ngIf=" colorBools.blue">
+            <td [style.background-color]="'blue'"></td>
+            <td><input #blue_s type="number" [value]="blue.s" (change)="blue.s=(blue_s.value)" /></td>
+            <td><input #blue_m type="number" [value]="blue.m" (change)="blue.m=(blue_m.value)" /></td>
+            <td><input #blue_l type="number" [value]="blue.l" (change)="blue.l=(blue_l.value)" /></td>
+            <td><input #blue_xl type="number" [value]="blue.xl" (change)="blue.xl=(blue_xl.value)" /></td>
+
+        </tr>
+        <tr *ngIf=" colorBools.green">
+            <td [style.background-color]="'green'"></td>
+            <td><input #green_s type="number" [value]="green.s" (change)="green.s=(green_s.value)" /></td>
+            <td><input #green_m type="number" [value]="green.m" (change)="green.m=(green_m.value)" /></td>
+            <td><input #green_l type="number" [value]="green.l" (change)="green.l=(green_l.value)" /></td>
+            <td><input #green_xl type="number" [value]="green.xl" (change)="green.xl=(green_xl.value)" /></td>
+
+        </tr>
+    </table>
+
+</div>
+<div class="table-container">
+    <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>price</th>
+            <th>Stock</th>
+            <th>{{addProductToggle?'':'Add a product '}}<button [ngClass]=" addProductToggle?'Stop-btn':'plus-btn'"
+                    (click)="addProductToggle=!addProductToggle">{{addProductToggle?'Stop':'+'}}</button>
+            </th>
+        </tr>
+        <tr *ngIf="(temp=='access denied'||temp=='error occured while getting data');else table">
+            <td>{{temp}}</td>
+            <td>{{temp}}</td>
+            <td>{{temp}} </td>
+            <td>{{temp}}</td>
+            <td><button>Delete</button></td>
+        </tr>
+        <ng-template #table>
+            <tr *ngFor="let item of data">
+                <td>{{item._id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.price}}</td>
+                <td>{{item.description}}</td>
+                <td><button (click)="DeleteProduct(item._id)" class="Delete-btn">Delete</button>
+                    <!-- <button (click)="DeleteProduct(item._id)" class="Edit-btn">Edit</button> -->
+                </td>
+            </tr>
+        </ng-template>
+    </table>
+    <div class="add-categories">
+        <label for="category">add a new Product category</label> <input #cat type="text" id="category" />
+        <br> <label for="gender">choose a gender that this product is for</label> <select #gender id="gender">
+            <option>men</option>
+            <option>women</option>
+        </select>
+        <button (click)="AddCat(cat.value,gender.value)">Add Cat</button>
+    </div>
+    <div class="add-categories">
+        <label for="featured">Feature a product on front page:</label>
+        <input #featured type="text" id="featured" placeholder="enter the product id" />
+        <button (click)="Addfeatured(featured.value)">Add Featured</button>
+    </div>
+
+</div>

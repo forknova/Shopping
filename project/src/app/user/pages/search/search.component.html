@@ -1,0 +1,80 @@
+<div class="shop-banner">
+    <div class="title">SHOP</div>
+</div>
+<div class="search-page-container">
+    <form class="filters-container"
+        (ngSubmit)="search(category.value, searchField.value, filter.value, gender.value, '1')">
+        <input #searchField type="text" placeholder="Search Products" />
+        <select #category>
+            <option value="">choose a category</option>
+            <option value=""></option>
+            <option *ngFor="let category of categories">{{category}}</option>
+        </select>
+        <select #gender>
+            <option value="">sort by gender</option>
+            <option value="">all genders</option>
+            <option value="men">men</option>
+            <option value="women"> women</option>
+        </select>
+        <select #filter>
+            <option value="">sort by price</option>
+            <option value="dsc">price high to low</option>
+            <option value="asc">price low to high</option>
+        </select>
+        <button (click)="search(category.value, searchField.value, filter.value, gender.value, '1')">Search</button>
+    </form>
+    <div class="search-results-container">
+        <div class="nbr-Of-results">{{nbrOfPosts}} out of {{nbrOfPosts}}</div>
+        <div class="products-container">
+            <div *ngFor="let item of data" class="product">
+                <div class="product-photo">
+                    <!-- <img [src]="imgFolder+item.img.filename" alt="bag" loading="lazy" /> -->
+                    <img [src]="item.img.url" alt="bag" loading="lazy" />
+                    <div class="addToCart-icon" (click)="toggleShowProducts(item._id)">
+                        +
+                    </div>
+                    <div class="product-colors">
+                        <div class="color" *ngFor="let color of item.description" [style.background-color]="color[0]">
+                        </div>
+                    </div>
+                </div>
+                <div class=" product-info">
+                    <div class="product-name">{{item.name}}</div>
+                    <div class="product-price">{{item.price}}$</div>
+                </div>
+            </div>
+        </div>
+        <div class="showProduct" *ngIf="showProduct">
+            <div class="close-btn" (click)="toggleShowProducts('')">
+                CLOSE
+            </div>
+            <div class="show-photo">
+                <img [src]="imgFolder+Product.img.filename" alt="" class="show-photo-img">
+            </div>
+            <div class="show-product-info">
+                <div class="show-product-title">{{Product.name}}</div>
+                <div class="show-product-price">${{Product.price}}</div>
+                <div class="show-product-colors">
+                    <div>available Colors</div>
+                    <span *ngFor="let color of colors" [style.background-color]="color"
+                        (click)="handleChangeColor(color)" [ngClass]="{selectedColor:color==selectedColor}">
+                    </span>
+                </div>
+                <div>
+                    <div class="show-sizes-title">Sizes</div>
+                    <div class="show-product-sizes">
+                        <div *ngFor="let size of sizes" [ngClass]="{selectedSize:size==selectedSize}"
+                            (click)="handleChangeSize(size)">{{size}}
+                        </div>
+                    </div>
+                </div>
+                <div class="show-product-qty">
+                    <div class="qty-btn pb-2" (click)="handleQtyChange(-1)">-</div>
+                    <div class="qty">{{SelectedQuantity}}</div>
+                    <div class="qty-btn" (click)="handleQtyChange(1)">+</div>
+                </div>
+                <div class=" show-addToCart-btn" (click)="addToCart()">Add to Cart</div>
+            </div>
+        </div>
+    </div>
+</div>

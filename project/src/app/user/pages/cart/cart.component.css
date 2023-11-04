@@ -1,0 +1,148 @@
+.cart-contaier {
+    margin-top: 47px;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    min-height: 400px;
+}
+
+.shop-banner {
+    width: 100%;
+    height: 100px;
+    margin-top: 48px;
+    background: url(../../../../assets/images/shop-banner.jpg);
+    background-repeat: repeat;
+    background-position: center;
+}
+
+.delete-btn {
+    color: red;
+    cursor: pointer;
+    padding-right: 4px;
+}
+
+.delete-btn>svg {
+    fill: red;
+}
+
+td {
+    text-align: center;
+}
+
+.total-cost {
+    width: 90%;
+    margin: 70px auto;
+    font-size: large;
+    font-weight: 600;
+}
+
+.info {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.title {
+    width: 100%;
+    margin: auto;
+    max-width: 1200px;
+    padding-left: 40px;
+    box-sizing: border-box;
+    font-size: 25px;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.cart-container {
+    margin-bottom: 70px;
+    min-height: 300px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.msg {
+    width: 70%;
+    margin: auto;
+    margin-top: 40px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+}
+
+table {
+    width: calc(100% - 80px);
+    margin: auto;
+    margin-top: 40px;
+}
+
+table>tr {
+    background-image: radial-gradient(circle at 0 100%, #000 1px, transparent 1px);
+    background-size: 2px 2px;
+    background-position: bottom left;
+    background-repeat: repeat-x;
+}
+
+tr>* {
+    padding: 10px;
+    word-break: break-all;
+}
+
+.photo {
+    height: 110px;
+    width: 86px;
+    display: inline-block;
+}
+
+.photo>img {
+    width: 100%;
+    height: 100%;
+}
+
+.name {
+    margin-left: 5px;
+    text-transform: capitalize;
+    font-weight: bold;
+}
+
+.qty,
+select {
+    padding: 10px 0px;
+}
+
+.qty {
+    width: 50%;
+    min-width: 24px;
+}
+
+@media(max-width:630px) {
+    .photo {
+        display: none;
+    }
+
+    .subtotal {
+        display: none;
+    }
+}
+
+@media(max-width:430px) {
+    .title {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding-left: 0px !important;
+    }
+}
+
+@media(max-width:320px) {
+    .cart-container {
+        overflow-x: scroll;
+    }
+}

@@ -1,0 +1,21 @@
+<div class="shop-banner">
+    <div class="title">History</div>
+</div>
+<div class="orders-container">
+    <div class="orders-table">
+        <div class="table-titles">
+            <div>order id</div>
+            <div>quantity of products</div>
+            <div>totalCost</div>
+            <div>paymentMethod</div>
+            <div>date of purchase</div>
+        </div>
+        <div class="order" *ngFor="let order of data">
+            <div>{{order.id}}</div>
+            <div>{{order.prodnumb}}</div>
+            <div>{{order.totalCost}}</div>
+            <div>{{order.paymentMethod}}</div>
+            <div>{{order.date}}</div>
+        </div>
+    </div>
+</div>

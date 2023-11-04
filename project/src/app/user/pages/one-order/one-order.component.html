@@ -1,0 +1,23 @@
+<div class="shop-banner">
+    <div class="title">History</div>
+</div>
+<div class="orders-container">
+    <div class="orders-table" *ngIf="data">
+        <div class="table-titles">
+            <div>order id</div>
+            <div>quantity of products</div>
+            <div>totalCost</div>
+            <div>address</div>
+            <div>paymentMethod</div>
+            <div>date of purchase</div>
+        </div>
+        <div class="order">
+            {{data._id}}
+            {{(data.products).length}}
+            {{data.totalcost}}
+            {{data.adress}}
+            {{data.paymentmethod}}
+            {{data.date}}
+        </div>
+    </div>
+</div>

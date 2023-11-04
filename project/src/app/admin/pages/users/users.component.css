@@ -1,0 +1,11 @@
+table {
+    border: 1px solid black;
+    max-width: 1160px;
+    margin: auto;
+    margin-top: 30px;
+    width: 90%;
+}
+
+td {
+    border: 1px solid black;
+}

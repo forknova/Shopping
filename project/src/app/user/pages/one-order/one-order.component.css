@@ -1,0 +1,44 @@
+.shop-banner {
+    width: 100%;
+    height: 100px;
+    margin-top: 48px;
+    background: url(../../../../assets/images/shop-banner.jpg);
+    background-repeat: repeat;
+    background-position: center;
+}
+
+.title {
+    width: 100%;
+    margin: auto;
+    max-width: 1200px;
+    padding-left: 40px;
+    box-sizing: border-box;
+    font-size: 25px;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.orders-container {
+    min-height: 300px;
+    max-width: 1200px;
+    margin: 70px auto;
+}
+
+.table-titles {
+    display: flex;
+    gap: 20px;
+}
+
+.order {
+    display: flex;
+    gap: 20px;
+}
+
+.orders-table {
+    width: calc(100% - 80px);
+    margin: auto;
+}

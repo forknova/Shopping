@@ -1,0 +1,21 @@
+<table class="options-container">
+    <td class="options">
+        <div class="user">
+            Account information
+        </div>
+        <div class="logout-btn" (click)="logout()">
+            LOGOUT
+        </div>
+    </td>
+    <td class="option-tab">
+        <p class="title">Account Information</p>
+        <div class="account-info">
+            email: <input #new_email type="text" [value]="email" [readonly]="!editable" />
+            password: <input #new_password type="password" [value]="password" [readonly]="!editable" />
+            <br>
+            <button (click)="editable=!editable; save(new_email.value,new_password.value)">{{editable?'save':'Edit'}}
+            </button>
+        </div>
+        <p class="title">Delete Account</p>
+    </td>
+</table>

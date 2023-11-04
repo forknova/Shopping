@@ -1,0 +1,30 @@
+<div class="">
+    <div class="logo">
+        ShoppingCenter
+    </div>
+    <div class="container">
+        <div class="photoContainer">
+            <img src="../../../assets/images/register2.png" alt="two people with bags" class="registerbackground"
+                loading="lazy">
+        </div>
+        <div class="registercontainer">
+            <div class="title">Register
+                <div *ngIf="message">{{message}}</div>
+            </div>
+            <form [formGroup]="registerForm" (ngSubmit)="onsubmit()">
+                <input type="text" placeholder="full name" formControlName="fullname" (change)="changenamebool()"
+                    [class.redborder]="!namebool" />
+                <input type="text" placeholder="email" formControlName="email" (change)="changeemailbool()"
+                    [class.redborder]="!emailbool" />
+                <input te="text" placeholder="password(minimum 8 characters)" formControlName="password"
+                    (change)="changepasswordbool()" [class.redborder]="!passwordbool" />
+                <p>already have an account? <a [routerLink]="['/authentication/login']"
+                        routerLinkActive="router-link-active">Login</a>
+                </p>
+                <button placeholder=" username" [disabled]="!registerForm.valid"
+                    [style.background]="!registerForm.valid?'rgb(71, 69, 69)':'black'">REGISTER
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,97 @@
+table {
+    border: 1px solid black;
+    max-width: 1160px;
+    margin: auto;
+    margin-top: 30px;
+    width: 90%;
+}
+
+td {
+    border: 1px solid black;
+}
+
+.Delete-btn {
+    margin: 4px;
+
+
+}
+
+.plus-btn {
+    font-size: large;
+}
+
+.Stop-btn {
+    background-color: red;
+}
+
+.color-btn {
+    width: 20px;
+    height: 20px;
+}
+
+.black-button {
+    background-color: black;
+}
+
+.red-button {
+    background-color: red;
+}
+
+.blue-button {
+    background-color: blue;
+}
+
+.white-button {
+    background-color: white;
+}
+
+.green-button {
+    background-color: green;
+}
+
+.add-container {
+    width: 100%;
+    text-align: center;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.add-categories {
+    width: 90%;
+    margin: auto;
+    margin-top: 100px;
+    display: table;
+}
+
+.add-categories>button {
+    padding: 5px;
+    margin-left: 10px;
+}
+
+.add-categories>select,
+input {
+    width: 100px;
+    padding: 5px 10px;
+}
+
+.add-categories>label {
+    display: table-cell;
+}
+
+.size {
+    width: 35%;
+}
+
+.table-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: auto;
+}
+
+@media(max-width:980px) {
+
+    .table-container,
+    .add-container {
+        overflow-x: scroll;
+    }
+}

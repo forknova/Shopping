@@ -1,0 +1,95 @@
+.options-container {
+    padding-top: 47px;
+    min-height: 600px;
+    max-width: 1200px;
+    width: 100%;
+    margin: auto;
+}
+
+td {
+    border-radius: 10px;
+}
+
+.option-tab {
+    background-color: lightgray;
+
+}
+
+.user {
+    background-color: whitesmoke;
+}
+
+.options>* {
+    margin-bottom: 20px;
+}
+
+.logout-btn {
+    background-color: red;
+    cursor: pointer;
+
+}
+
+.logout-btn:hover {
+    background-color: rgb(114, 10, 10);
+}
+
+.account-info {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.account-info>* {
+    margin: auto;
+}
+
+.account-info>input,
+button,
+select {
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.options {
+    background-color: rgb(180, 178, 178);
+    width: 25%;
+}
+
+
+.title {
+    text-align: center;
+    width: 100%;
+    font-size: x-large;
+    margin-bottom: 10px;
+}
+
+.options>div {
+    padding: 5px;
+    text-align: center;
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 10px 10px 0px 0px;
+    box-sizing: border-box;
+}
+
+@media(max-width:700px) {
+
+    .account-info>input,
+    button,
+    select {
+        width: 75%;
+        margin-bottom: 20px;
+    }
+
+}
+
+@media(max-width:400px) {
+
+    .account-info>input,
+    button,
+    select {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+}
