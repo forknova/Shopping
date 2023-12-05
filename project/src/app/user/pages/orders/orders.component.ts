@@ -7,12 +7,13 @@ import { UserService } from '../../services/user.service';
   styleUrls: ['./orders.component.css']
 })
 export class OrdersComponent {
-  userId: string | null = localStorage.getItem("id");
-  data: any = { id: '65420dbd1c0b2577bb926ef2', prodnumb: 2, totalCost: 360, paymentMethod: 'visa', date: '2023-11-01T08:35:09.541Z' };
+  data: any = [];
+  router: any;
   constructor(private userService: UserService) { }
   getOrders() {
-    if (this.userId) this.userService.getOrders(this.userId).subscribe({
-      next: (e) => { this.data = e, console.log(e) },
+    //This get all past orders of the user and its called when the component is rendered
+    this.userService.getOrders().subscribe({
+      next: (e) => { this.data = e },
       error: (e) => console.log(e)
     })
   }

@@ -1,17 +1,17 @@
 <div class="buy-container">
-    <div class="msg" *ngIf="msg">
-        {{msg}}
-    </div>
-    <form (submit)="buy(method.value,pass.value,address.value)">
-        <label for="method">select a payment method</label>
-        <select #method name="method">
-            <option>masterCard</option>
-            <option>visa</option>
-            <option>omt</option>
-            <option>WishMoney</option>
+    <form [formGroup]="buyForm" (ngSubmit)="buy()" class="inputs-container">
+        <div class="title">select a payment method</div>
+        <div *ngIf="msg" class="notification">{{msg}}</div>
+        <div *ngIf="data">you'll pay ${{data[1]}} for {{data[0].length}} different products</div>
+        <select formControlName="method">
+            <option value="" disabled>Select a payment method</option>
+            <option value="masterCard">MasterCard</option>
+            <option value="visa">Visa</option>
+            <option value="omt">OMT</option>
+            <option value="WishMoney">WishMoney</option>
         </select>
-        <input #pass type="text" placeholder="enter your cart info">
-        <input #address type=" text" placeholder="enter your address">
-        <input type="submit" value="buy" />
+        <input type="text" formControlName="pass" placeholder="enter your cart info">
+        <input type="text" formControlName="address" placeholder="enter your address">
+        <button class="buy-btn" type="submit">Buy</button>
     </form>
 </div>

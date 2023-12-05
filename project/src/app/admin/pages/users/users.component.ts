@@ -8,29 +8,49 @@ import { Router } from '@angular/router';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent {
-  adminId: any = localStorage.getItem("id");
   constructor(private adminService: AdminService, private router: Router) { };
   data: [{ id: string, fullname: string, email: string, role: string }] = [{ id: "", fullname: "", email: "", role: "" }];
   temp: [{ id: string, fullname: string, email: string, role: string }] | string = "";
-  DeletedBool: boolean = false;
+  DeletedBool: boolean | string = false;
   async OnSearch() {
-    this.temp = await this.adminService.getUsers(this.adminId);
-    if (typeof this.temp == 'object') {
-      this.data = this.temp
-    }
+    this.adminService.getUsers().subscribe({
+      next: (res: any) => {
+        if (res == false) {
+          this.temp = "access denied";
+        }
+        else if (res.result == "user array is empty") {
+          this.temp = res.result
+        }
+        else {
+          this.data = res
+        }
+      },
+      error: () => {
+        this.temp = "error occured while getting data"
+      }
+    })
   }
   async DeleteUser(user: string) {
-    this.DeletedBool = await this.adminService.deleteUser(this.adminId, user);
-    if (this.DeletedBool) {
-      this.data.map((_user) => {
-        if (_user.id == user) { this.data.splice(this.data.indexOf(_user), 1); return }
-      })
-    }
+    this.adminService.deleteUser(user).subscribe({
+      next: (res: any) => {
+        if (res == false) {
+          this.DeletedBool = "access denied";
+        }
+        else {
+          this.DeletedBool = res;
+          if (this.DeletedBool) {
+            this.data.map((_user) => {
+              if (_user.id == user) { this.data.splice(this.data.indexOf(_user), 1); return }
+            })
+          }
+        }
+      },
+      error: (e: any) => {
+        this.DeletedBool = e
+      }
+    });
   }
   ngOnInit(): void {
     this.OnSearch();
-    if (localStorage.getItem("role") != "admin") {
-      this.router.navigateByUrl('/login')
-    }
   }
 }

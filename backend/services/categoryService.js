@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-import categorySchema from '../model/categorySchema.js';
-import userSchema from '../model/userSchema.js';
+import categorySchema from '../model/CategorySchema.js';
+import userSchema from '../model/UserSchema.js';
 const User = mongoose.model('Users', userSchema);
 const Category = mongoose.model('Categories', categorySchema);
-
-import connection from "../connection.js"
+import  Connection  from "../connection.js" ;
 
 const isAdmin = async (id) => {
     try {
@@ -50,26 +49,21 @@ catch (e) {
 }
 }
 
-const getAllCategories = async() => {
-    try{
-        
+const getAllCategories = async () => {
+    try {
         let categories = await Category.find();
-        let categoriesInfo = categories.map(categ => {
-         
-         return  categ.type;
-         })
-     return categoriesInfo
-     }
-      
-      
-  
-      
-    
-    catch (e) {
+        let categoriesInfo = categories.map(categ => categ.type);
+
+        // Remove duplicates from categoriesInfo
+        categoriesInfo = [...new Set(categoriesInfo)];
+
+        return categoriesInfo;
+    } catch (e) {
         console.log(e);
-        return undefined
+        return undefined;
     }
-}
+};
+
 export default{
     addCategory,
     getAllCategories

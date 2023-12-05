@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-header',
@@ -13,12 +13,25 @@ export class HeaderComponent {
   onProducts: boolean = false;
   onOrders: boolean = false;
   ngOnInit(): void {
-    switch (this.router.url) {
-      case "/user": this.changeSelected('onProducts'); break;
-      case "/user/Shoppingcart": this.changeSelected('onOrders'); break;
-      case "/user/search": this.changeSelected('onUsers'); break;
-    }
+    this.onRouteChange();
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.onRouteChange();
+      }
+    });
   }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigateByUrl('/authentication/login');
+  }
+
+  onRouteChange() {
+    if (this.router.url.startsWith("/user/Shoppingcart")) this.changeSelected('onOrders')
+    else if (this.router.url.startsWith("/user/search")) this.changeSelected('onUsers')
+    else if (this.router.url.startsWith("/user")) this.changeSelected('onProducts')
+  }
+
   clearHeader() {
     this.onUsers = false;
     this.onProducts = false;

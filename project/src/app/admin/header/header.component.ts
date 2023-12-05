@@ -15,20 +15,21 @@ export class HeaderComponent {
   ngOnInit(): void {
     switch (this.router.url) {
       case "/admin": this.changeSelected('onProducts'); break;
-      case "/admin/orders": this.changeSelected('onOrders'); break;
       case "/admin/users": this.changeSelected('onUsers'); break;
+      case "/admin/orders": this.changeSelected('onOrders'); break
     }
   }
   changeSelected(variable: string): void {
     this.onUsers = false;
     this.onProducts = false;
-    this.onOrders = false;
+    this.onOrders = false
     if (variable == "onProducts") { this.onProducts = true; }
     if (variable == "onUsers") { this.onUsers = true; }
     if (variable == "onOrders") { this.onOrders = true; }
   }
   logout() {
     localStorage.clear();
-    this.router.navigateByUrl('/login');
+    this.router.navigateByUrl('/authentication/login');
   }
 }
+

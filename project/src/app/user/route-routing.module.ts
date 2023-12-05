@@ -11,15 +11,16 @@ import { BuyComponent } from './pages/buy/buy.component';
 
 const routes: Routes = [
   {
-    //path:'' is for /admin on the url which sends us to to dashboard components that have the router-outlet 
+    //path:'' is for /user on the url which sends us to to usermain component that have the router-outlet 
     path: '', component: UsermainComponent, children: [
       { path: '', component: HomepageComponent },
-      { path: 'search', component: SearchComponent },
+      { path: 'search', pathMatch: 'full', component: SearchComponent },
+      { path: 'search/:cat/:prodId', component: SearchComponent },
       { path: 'options', component: OptionsComponent },
       { path: 'Shoppingcart', component: CartComponent },
       { path: 'orders', component: OrdersComponent },
       { path: 'one-order/:id', component: OneOrderComponent },
-      { path: 'buy/:id', component: BuyComponent },
+      { path: 'buy', component: BuyComponent },
     ]
   }
 ];

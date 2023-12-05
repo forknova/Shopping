@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import productSchema from '../model/productSchema.js';
-import userSchema from '../model/userSchema.js';
-import featuredSchema from "../model/featuredSchema.js";
+import productSchema from '../model/ProductSchema.js';
+import userSchema from '../model/UserSchema.js';
+import featuredSchema from "../model/FeaturedSchema.js";
 const Featured = mongoose.model('Featured', featuredSchema)
 const Product = mongoose.model('Products', productSchema);
 const User = mongoose.model('Users', userSchema);
-
+import  Connection  from "../connection.js" ;
 const isAdmin = async (id) => {
     try {
         const admin = await User.findById(id);
@@ -53,7 +53,7 @@ const getFeatured = async () => {
         if(features.length>0){
             for(let i=0 ; i<features.length; i++){
              let product = await Product.findById(features[i].productId)   
-               msg.push({"id":product.id,"name":product.name, "img":product.img, "price":product.price})
+               msg.push({"id":product.id,"name":product.name, "img":product.imgUrl, "price":product.price})
             }
             return msg
         }

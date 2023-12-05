@@ -1,19 +1,20 @@
 // //product service
-
-import mongoose from "mongoose";
-import productSchema from '../model/productSchema.js';
-import userSchema from '../model/userSchema.js';
-import categorySchema from '../model/categorySchema.js'
-import fs from 'fs'
 import path from "path";
+import mongoose from "mongoose";
+import productSchema from '../model/ProductSchema.js';
+import userSchema from '../model/UserSchema.js';
+import categorySchema from '../model/CategorySchema.js'
+import fs from 'fs'
+import Connection from "../connection.js";
+
 
 const User = mongoose.model('Users', userSchema);
 const Product = mongoose.model('Products', productSchema);
 const Categories = mongoose.model('categories', categorySchema);
 
 
-import connection from "../connection.js"
-
+import { json } from "express";
+import { Console } from "console";
 
 const isAdmin = async (id) => {
     try {
@@ -31,51 +32,37 @@ const isAdmin = async (id) => {
     }
 };
 
-const addProduct = async (adminId, name, file, price, description, category) => {
+const addProduct = async (adminId, name, imgUrl, price, description, category) => {
 
     try {
-        console.log(file)
-        const sourcePath = file.path;
-        const uniqueIdentifier = Date.now(); // to prevent errors
-        const pathToSave = "C:/pojects/Interphase-project-main/Interphase-project-main/backend/public"
-        const destinationPath = path.join(pathToSave, `${uniqueIdentifier}_${file.originalname}`);
-
-        
-        const readStream = fs.createReadStream(sourcePath);
-const writeStream = fs.createWriteStream(destinationPath);
-
-readStream.pipe(writeStream);
-        const url = destinationPath;
-        const filename=uniqueIdentifier+"_"+file.originalname
-        const img = { filename, url };
-        let cat = await Categories.findOne({$and: [{gender: category.gender, type: category.type}]});
+        let cat = await Categories.findOne({ $and: [{ gender: category.gender, type: category.type }] });
         let categoryId = cat.id
-        if(categoryId){
+        if (categoryId) {
 
-        if (await isAdmin(adminId)) {
-            const newProduct = new Product({
-                name,
-                price,
-                description,
-                categoryId,
-                img
+            if (await isAdmin(adminId)) {
+                const newProduct = new Product({
+                    name,
+                    price,
+                    description,
+                    categoryId,
+                    imgUrl
 
-            });
+                });
 
 
-            await newProduct.save();
+                await newProduct.save();
 
-            // console.log(description)
-            return true;
+                // console.log(description)
+                return true;
 
+            }
+            else {
+                return false //not an admin
+            }
         }
         else {
-            return false //not an admin
+            return false //no category with these type  and gender
         }
-    }
-    else{
-        return false //no category with these type  and gender
-    }
     }
     catch (e) {
         console.log(e);
@@ -86,21 +73,21 @@ readStream.pipe(writeStream);
 
 const getAllProducts = async (adminId) => {
     try {
-        // if (await isAdmin(adminId)) {
-        let products = await Product.find()
-        let productsInfo = []
-        for (let i=0 ; i<products.length ; i++){
-            if(!(products[i].isDeleted)){
-            let catId = products[i].categoryId
-            if(catId){
-                let category = await Categories.findById(catId)
-                productsInfo.push({"_id":products[i].id, "name":products[i].name, "img":products[i].img, "price":products[i].price,"description":products[i].description,"categoryId":products[i].categoryId,"gender":category.gender,"type":category.type , "isDeleted":products[i].isDeleted})
+        if (await isAdmin(adminId)) {
+            let products = await Product.find()
+            let productsInfo = []
+            for (let i = 0; i < products.length; i++) {
+                if (!(products[i].isDeleted)) {
+                    let catId = products[i].categoryId
+                    if (catId) {
+                        let category = await Categories.findById(catId)
+                        productsInfo.push({ "_id": products[i].id, "name": products[i].name, "img": products[i].imgUrl, "price": products[i].price, "description": products[i].description, "categoryId": products[i].categoryId, "gender": category.gender, "type": category.type, "isDeleted": products[i].isDeleted })
+                    }
+                }
             }
+            return productsInfo
         }
-        }
-        return productsInfo
-    // }
-    // return false // not an admin
+        return false // not an admin
 
             ;
 
@@ -116,18 +103,19 @@ const getOneProduct = async (productId) => {
     try {
         let product = await Product.findById(productId);
         let productsInfo
-        if(product){
+        if (product) {
             let catId = product.categoryId
-            if(catId){
+            if (catId) {
                 let category = await Categories.findById(catId)
-            productsInfo={"_id":product.id, "name":product.name, "img":product.img, "price":product.price,"description":product.description,"categoryId":product.categoryId,"gender":category.gender,"type":category.type}
-            
-        }
-        return productsInfo
+                productsInfo = { "_id": product.id, "name": product.name, "img": product.imgUrl, "price": product.price, "description": product.description, "categoryId": product.categoryId, "gender": category.gender, "type": category.type }
+
+            }
+            return productsInfo
 
         }
-            return false //no product with this id
-        
+        return false //no product with this id 
+
+
 
     }
     catch (e) {
@@ -142,11 +130,11 @@ const removeProduct = async (adminId, productId) => {
         if (await isAdmin(adminId)) {
             let product = await Product.findById(productId);
             if (product) {
-              product.isDeleted = true;
-              await product.save(); 
-              return true;
+                product.isDeleted = true;
+                await product.save();
+                return true;
             } else {
-              return false;
+                return false;
             }
         }
         else {
@@ -164,14 +152,14 @@ const editProduct = async (adminId, productId, name, price, description, categor
     try {
         if (await isAdmin(adminId)) {
             let updated = await Product.findByIdAndUpdate(productId, { name: name, price: price, description: description, category: category })
-            console.log(updated)
+            // console.log(updated)
             if (updated) {
                 return true
-            //     if(checkquantity(productId))
-            //     return true
-            // else {
-            //     return false
-            // }
+                //     if(checkquantity(productId))
+                //     return true
+                // else {
+                //     return false
+                // }
             }
             else {
                 return false // no prod with this id
@@ -188,75 +176,111 @@ const editProduct = async (adminId, productId, name, price, description, categor
 
 }
 
-const searchProduct = async (gender, type, search, sort,page) => {
+const searchProduct = async (gender, type, search, sort, page) => {
     try {
-  let start = (page-1)*12
-  let count
-        let products = await Product.find({isDeleted:false});
-        count = await Product.find({isDeleted:false}).count()
         let query = {};
 
-        if (gender != "") {
-            query['category.gender'] = gender;
+        if (gender != '') {
+            query.gender = gender;
         }
 
         if (type != "") {
-            query['category.type'] = type;
+            query.type = { $regex: type, $options: 'i' };
         }
 
-        if (search != "") {
+        let categ = await Categories.find(query);
+        let produits = [];
+        let totalCount = 0;
+        let products;
 
-            products = await Product.find({ $and: [query, { name: { $regex: search, $options: 'i' } }, {isDeleted:false}] }).skip(start).limit(12);;
+        if (categ.length > 0) {
+            for (let i = 0; i < categ.length; i++) {
+                let categId = categ[i].id;
 
+                if (search != "") {
+                    query = {
+                        $and: [
+                            { categoryId: categId },
+                            { name: { $regex: search, $options: 'i' } },
+                            { isDeleted: false }
+                        ]
+                    };
+                } else {
+                    query = {
+                        $and: [
+                            { categoryId: categId },
+                            { isDeleted: false }
+                        ]
+                    };
+                }
 
+                products = await Product.find(query);
+
+                let count = await Product.find(query).count();
+                totalCount += count;
+
+                produits.push(...products);
+            }
         }
-        else {
-            products = await Product.find({ $and: [query, {isDeleted:false}]}).skip(start).limit(12);
-            count = await Product.find(query).count()
-        }
+
         if (sort == "asc") {
-            products = await Product.find({ $and: [query, {isDeleted:false}]}).sort({ 'price': 1 }).skip(start).limit(12).exec();
-            count = await Product.find({ $and: [query, {isDeleted:false}]}).count();
+            produits.sort((a, b) => a.price - b.price);
         } else if (sort == "dsc") {
-            products = await Product.find({ $and: [query, {isDeleted:false}]}).sort({ 'price': -1 }).skip(start).limit(12).exec();
-            count = await Product.find({ $and: [query, {isDeleted:false}]}).count();
+            produits.sort((a, b) => b.price - a.price);
         }
-        
 
-let produits = [products]
-       produits.push(products.length)
-       produits.push(count)
-       return produits
+        if (page > 1) {
+            let splice = (page - 1) * 12;
+            produits.splice(0, splice);
+            produits.splice(page * 12);
+        } else {
+            produits.splice(12);
+        }
 
+        return [
+            produits,
+            produits.length,
+            totalCount
+        ];
 
     } catch (e) {
         console.error(e);
         throw e;
     }
 }
+    // else {
+        //     if (search != "") {
 
+        //         products = await Product.find({ $and: [{ name: { $regex: search, $options: 'i' } }, { isDeleted: false }] }).skip(start).limit(12);;
 
+        //         if (sort == "asc") {
+        //             products = await Product.find({ $and: [{ isDeleted: false} ,{ name: { $regex: search, $options: 'i' }} ] }).sort({ 'price': 1 }).skip(start).limit(12).exec();
+        //             count = await Product.find({ $and: [{ isDeleted: false} ,{ name: { $regex: search, $options: 'i' }} ] }).count();
+        //         } else if (sort == "dsc") {
+        //             products = await Product.find({ $and: [{ isDeleted: false} ,{ name: { $regex: search, $options: 'i' }} ] }).sort({ 'price': -1 }).skip(start).limit(12).exec();
+        //             count = await Product.find({ $and: [{ isDeleted: false} ,{ name: { $regex: search, $options: 'i' }} ] }).count();
+        //         }
 
+        //     }
+        //     else {
+                
+        //         products = await Product.find({ isDeleted: false }).skip(start).limit(12);
+        //         count = await Product.find({ isDeleted: false }).count()
+               
+        //     if (sort == "asc") {
+        //         products = await Product.find({ isDeleted: false }).sort({ 'price': 1 }).skip(start).limit(12).exec();
+        //         count = await Product.find({ isDeleted: false }).count();
+        //     } else if (sort == "dsc") {
+        //         products = await Product.find({ isDeleted: false }).sort({ 'price': -1 }).skip(start).limit(12).exec();
+        //         count = await Product.find({ isDeleted: false }).count();
+        //     }
+        //     }
 
-// const checkquantity = async (productId) => {
-//     try{
-//     let product = await Product.findById(productId)
-//     for(let i = 0 ; i< product.description.length ; i++){
-//         for(let j=0 ; j< product.description[i].length; j++)
-//         if(product.description[i][j][1] == 0){
-//             product.description.splice([i][j])
-//             let updated = await Product.findByIdAndUpdate(productId, {products:product})
-//             if(updated){
-//                 return true
-//             }
-//             return false
-//         }
-
-//     }} catch (e) {
-//         console.error(e);
-//         throw e;
-//     }
-// }
+        //     produits = products
+        //     produits.push(products.length)
+        //     produits.push(count)
+        //     return produits
+        // }
 
 
 

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -7,9 +8,4 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent {
   constructor(private router: Router) { }
-  ngOnInit(): void {
-    if (localStorage.getItem("role") != "admin") {
-      this.router.navigateByUrl('/login')
-    }
-  }
 }

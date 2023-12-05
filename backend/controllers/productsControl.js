@@ -1,18 +1,22 @@
 //products control
 // import fs from 'fs'
 import productService from '../services/productService.js';
-
 const addProduct = async (req, res) => {
     try {
-        console.log(JSON.parse(req.body.data))
+        // console.log(JSON.parse(req.body.data))
         if (req.body && req.body.data) {
-        let adminId = req.query.adminId;
+            const user = req.user;
+
+            if (!user) {
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
         let data = JSON.parse(req.body.data);
+       
         let name = data.name;
         let price = data.price;
         let description = data.description;
         let category = data.category;
-        const file = req.file;;
+        const imageUrl = req.file.filename
         let size = ['s', 'm', 'l', 'xl'];
         let main = [];
         for (let i = 0; i < description.length; i++) {
@@ -29,7 +33,7 @@ const addProduct = async (req, res) => {
             main.push(colorEntry);
         }
 
-        let added = await productService.addProduct(adminId, name, file, price, main, category);
+        let added = await productService.addProduct(user.userId, name,imageUrl, price, main, category);
 
         if (added === true) {
             res.send(true);
@@ -46,8 +50,12 @@ const addProduct = async (req, res) => {
 
 const showAllproducts = async (req, res) => {
     try {
-    //     let adminId = req.query.adminId
-        const products = await productService.getAllProducts();
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        const products = await productService.getAllProducts(user.userId);
         if(products.length>0){
             res.send(products)
         }
@@ -61,6 +69,11 @@ const showAllproducts = async (req, res) => {
 }
 const showOneProduct = async (req, res) => {
     try {
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         let productId = req.query.productId
         const product = await productService.getOneProduct(productId);
         if(product){
@@ -79,9 +92,13 @@ const showOneProduct = async (req, res) => {
 
 const removeProduct = async (req, res) => {
     try {
-        let adminId = req.query.adminId
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         let productId = req.query.productId
-        let removed = await productService.removeProduct(adminId, productId)
+        let removed = await productService.removeProduct(user.userId, productId)
         if (removed) {
             res.send(true)
         }
@@ -100,29 +117,35 @@ const removeProduct = async (req, res) => {
 
 const editProduct = async (req, res) => {
     try {
-        let adminId = req.query.adminId
-        let productId = req.query.productId
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        let productId = req.body.productId
         let name = req.body.name;
         let description = req.body.description;
+        let price = req.body.price;
+        let category = req.body.category
         let size = ['s', 'm', 'l', 'xl'];
         let main = [];
-
+if(description){
+    console.log("aloo")
         for (let i = 0; i < description.length; i++) {
             let color = description[i].color;
             let quantity = [description[i].s, description[i].m, description[i].l, description[i].xl];
             let colorEntry = [color];
 
             for (let j = 0; j < size.length; j++) {
-                if (quantity[j] !== 0) {
+                if (quantity[j] !== 0 && quantity[j]!=null) {
                     colorEntry.push([size[j], quantity[j]]);
                 }
             }
 
             main.push(colorEntry);
         }
-        let price = req.body.price;
-        let category = req.body.category
-        let updated = await productService.editProduct(adminId, productId, name, price, main, category)
+       
+        let updated = await productService.editProduct(user.userId, productId, name, price, main, category)
         if (updated) {
             res.send(true)
         }
@@ -130,7 +153,15 @@ const editProduct = async (req, res) => {
             res.send(false)
         }
     }
-
+    else{
+    let updated = await productService.editProduct(user.userId, productId, name, price, description, category)
+    if (updated) {
+        res.send(true)
+    }
+    else if (updated == false) {
+        res.send(false)
+    }
+    }}
     catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
@@ -139,15 +170,20 @@ const editProduct = async (req, res) => {
 
 const searchProduct = async (req, res) => {
     try {
+        
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         let page = req.query.page
+        
         let search = req.query.searchField;
         let gender = req.query.gender;
         let type = req.query.type;
         let sort = req.query.sort;
         let find = await productService.searchProduct(gender, type, search, sort, page)
-        console.log(find)
         if (find.length > 0) {
-            // console.log(find)
             res.send(find)
         }
         else {

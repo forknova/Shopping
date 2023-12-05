@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
-import cartSchema from '../model/cartSchema.js';
-import productSchema from '../model/productSchema.js';
-import connection from "../connection.js"
+import cartSchema from '../model/CartSchema.js';
+import productSchema from '../model/ProductSchema.js';
 
 const Cart = mongoose.model('ShoppingCarts', cartSchema);
 const Product = mongoose.model('Products', productSchema);
-
+import Connection from "../connection.js";
 const getCart = async (userId) => {
   try {
-    
+
     let cart = await Cart.findOne({ userId: userId });
     console.log(cart)
     if (cart) {
@@ -21,15 +20,15 @@ const getCart = async (userId) => {
         let product = await Product.findById(prodId);
 
         let desc = product.description;
-        let img = product.img
+        let img = product.imgUrl
         let prodname = product.name;
-        let prodprice = product.price
-
+        let prodprice = product.price;
+        let isDeleted = product.isDeleted
         let color = cart.products[i].color
         let size = cart.products[i].size
         let quantity = cart.products[i].quantity
         // msg.push( {product: cart.products[i], description: desc, });
-        msg.push({ product: { productId: prodId, name: prodname, size: size, color: color, price: prodprice, quantity: quantity,  img:img }, description: desc });
+        msg.push({ product: { productId: prodId, name: prodname, size: size, color: color, price: prodprice, quantity: quantity, img: img, isDeleted: isDeleted }, description: desc });
         console.log(msg[0].product)
 
       }
@@ -50,47 +49,46 @@ const getCart = async (userId) => {
 const addProduct = async (userId, prodId, color, size, quantity) => {
 
   try {
-    // console.log(prodId)
-    console.log(userId)
     let available = await Cart.findOne({ userId: userId })
     quantity = parseInt(quantity)
-    if(checkQuantity(prodId,quantity)){
-    if (available) {
-           
-      let products = available.products || [];
-      products.push({ "productId": prodId, "color": color, "size": size, "quantity": quantity, })
-      await Cart.updateOne({ userId: userId }, { products: products })
-      let totalcost = await totalCost(available.id)
-      await Cart.updateOne({ userId: userId }, { totalcost: totalcost })
+    if (checkQuantity(prodId, quantity)) {
+      if (available) {
+
+        let products = available.products || [];
+        products.push({ "productId": prodId, "color": color, "size": size, "quantity": quantity, })
+        await Cart.updateOne({ userId: userId }, { products: products })
+        let totalcost = await totalCost(available.id)
+        await Cart.updateOne({ userId: userId }, { totalcost: totalcost })
 
 
 
-      return true
-           
-           }
-    
-    else {
-      let products = [{ "productId": prodId, "color": color, "size": size, "quantity": quantity }]
-      let prod = await Product.findById(prodId)
-      console.log(prod)
-      let price = parseInt(prod.price)
+        return true
 
-      let totalcost = price * quantity
+      }
 
+      else {
+        let products = [{ "productId": prodId, "color": color, "size": size, "quantity": quantity }]
+        let prod = await Product.findById(prodId)
 
+        let price = parseInt(prod.price)
 
-      const newCart = new Cart({
-        userId,
-        products,
-        totalcost
-      });
-
-      await newCart.save();
-
-      return true;
+        let totalcost = price * quantity
 
 
-    }}
+
+        const newCart = new Cart({
+          userId,
+          products,
+          totalcost
+        });
+
+        await newCart.save();
+
+        return true;
+
+
+      }
+    }
     return false //no quantity available
 
   }
@@ -106,7 +104,7 @@ const totalCost = async (cartId) => {
   let total = 0;
   try {
     let cart = await Cart.findById(cartId);
-    console.log(cart)
+
     if (cart) {
       for (let i = 0; i < cart.products.length; i++) {
         let prodId = cart.products[i].productId;
@@ -137,11 +135,12 @@ const removeProduct = async (userId, prodId, size, color) => {
         let dbcolor = products[i].color;
         let dbsize = products[i].size;
 
-        if (prodid == prodId && dbcolor == color && dbsize == size) {
+        if (prodid.valueOf() == prodId && dbcolor == color && dbsize == size) {
+          
           products.splice(i, 1);
           await Cart.updateOne({ userId: userId }, { products: products })
-          await totalCost(cart.id)
-
+          let totalcost = await totalCost(cart.id)
+          await Cart.updateOne({ userId: userId }, { totalcost: totalcost });
           return true
         }
       }
@@ -163,18 +162,19 @@ const editProduct = async (userId, prodId, size, color, quantity) => {
     if (products.length > 0) {
       for (let i = 0; i < products.length; i++) {
         if (products[i].productId == prodId) {
-          products[i].color  = color;
+          products[i].color = color;
           products[i].size = size;
           products[i].quantity = quantity;
-          if(checkQuantity(prodId,quantity)){
-          let updated = await Cart.updateOne({ userId: userId }, { products: products })
-          if (updated) {
+          if (await checkQuantity(prodId, quantity)) {
+            let updated = await Cart.updateOne({ userId: userId }, { products: products })
+            if (updated) {
 
-            // recalculate total cost
-            let totalcost = await totalCost(cart.id);
-            await Cart.updateOne({ userId: userId }, { totalcost: totalcost });
-            return true
-          }}
+              // recalculate total cost
+              let totalcost = await totalCost(cart.id);
+              await Cart.updateOne({ userId: userId }, { totalcost: totalcost });
+              return true
+            }
+          }
           return false // quantity not available
         }
       }
@@ -189,26 +189,27 @@ const editProduct = async (userId, prodId, size, color, quantity) => {
   }
 }
 
-const checkQuantity = async (productId,quantity)=>{
-try{
-  if(productId){
-  let products = Product.findById(productId)
-  let description = products.description
-  for (let i = 0; i < description.length ; i++ ){
-    for(let j = 1; j<description[i].length; j++){
-      let prodquantity = description[i][j][1];
-      if(quantity>prodquantity){
-        return false
-      }
-    }
+const checkQuantity = async (productId, quantity) => {
+  try {
+    if (productId) {
+      let products = await Product.findById(productId)
+      let description = products.description
+      for (let i = 0; i < description.length; i++) {
+        for (let j = 1; j < description[i].length; j++) {
+          let prodquantity = description[i][j][1];
+          if (quantity > prodquantity) {
+            return false
+          }
+        }
 
+      }
+      return true
+    }
   }
-  return true}
-}
-catch (e) {
-  console.log(e);
-  return false
-}
+  catch (e) {
+    console.log(e);
+    return false
+  }
 }
 
 

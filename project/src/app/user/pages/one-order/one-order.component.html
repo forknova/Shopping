@@ -1,23 +1,50 @@
 <div class="shop-banner">
     <div class="title">History</div>
 </div>
-<div class="orders-container">
-    <div class="orders-table" *ngIf="data">
-        <div class="table-titles">
-            <div>order id</div>
-            <div>quantity of products</div>
-            <div>totalCost</div>
-            <div>address</div>
-            <div>paymentMethod</div>
-            <div>date of purchase</div>
-        </div>
-        <div class="order">
-            {{data._id}}
-            {{(data.products).length}}
-            {{data.totalcost}}
-            {{data.adress}}
-            {{data.paymentmethod}}
-            {{data.date}}
-        </div>
-    </div>
+<div class="cart-container">
+    <table *ngIf="data" class="order-data">
+        <tr>
+            <th>order id</th>
+            <th>quantity of products</th>
+            <th>total Cost</th>
+            <th>payment Method</th>
+            <th>date of purchase</th>
+        </tr>
+        <tr>
+            <td> {{data.id.substring(0,7)}}</td>
+            <td> {{products.length}}</td>
+            <td> ${{data.totalcost}}</td>
+            <td> {{data.paymentmethod}}</td>
+            <td> {{data.date}}</td>
+        </tr>
+    </table>
+
+    <table class="products-table">
+        <tr class="table-ths">
+            <th>product</th>
+            <th>color</th>
+            <th>size</th>
+            <th>qty</th>
+            <th>price</th>
+        </tr>
+        <tr *ngFor="let item of products">
+            <td>
+                <div class="info">
+                    <span class="photo">
+                        <img [src]="Foldername+item.product.img" alt=" product photo">
+                    </span>
+                    <span class="name">{{item.product.name}}</span>
+                </div>
+            </td>
+            <td>
+                {{item.product.color}}
+            </td>
+            <td>
+                {{item.product.size}}
+            </td>
+            <td>{{item.product.quantity}}</td>
+            <td>${{item.product.price}}</td>
+        </tr>
+    </table>
+
 </div>

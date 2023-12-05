@@ -4,7 +4,6 @@ header {
     background-color: white;
     border-bottom: 1px solid black;
     color: gray;
-    border-radius: 10px;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
     font-weight: bold;
@@ -12,6 +11,15 @@ header {
     position: fixed;
     top: 0;
     width: 100%;
+}
+
+svg {
+    fill: #808080;
+
+}
+
+svg:hover {
+    fill: #77badb;
 }
 
 .header-container {
@@ -24,8 +32,12 @@ header {
 
 .logo {
     margin-left: 40px;
-    display: flex;
-    align-items: center;
+    background: url(../../../assets/images/attachment_109508038.png);
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    width: 82px;
+    height: 47px;
     text-wrap: nowrap;
 }
 
@@ -36,7 +48,11 @@ header {
 .logout {
     margin-right: 40px;
     display: flex;
+    gap: 10px;
     align-items: center;
+}
+
+.logout>svg {
     cursor: pointer;
 }
 
@@ -44,7 +60,7 @@ header {
     width: 100%;
     display: flex;
     gap: 15px;
-    margin-left: 20px;
+    margin-left: 35px;
     text-wrap: nowrap;
     align-items: center;
 }
@@ -62,46 +78,48 @@ header {
 }
 
 .selected {
-    background-color: gray;
-    height: 47px;
-    padding: 0px 60px;
-    box-sizing: border-box;
+    color: #2398d4;
     text-align: center;
-    justify-content: center;
-    max-width: 60px;
-    display: flex;
-    align-items: center;
-    color: white !important;
 }
 
 .sidebarSelected {
-    background-color: gray;
+    color: white !important;
 }
 
 .listItem:hover {
     cursor: pointer;
-    color: black;
+    color: #77badb;
 }
 
 @media(max-width:750px) {
+
     .sidebar {
         display: flex !important;
         position: fixed;
         flex-direction: column;
-        gap: 25px;
-        padding: 40px;
-        background: lightgrey;
+        gap: 15px;
+        padding: 17px 40px;
+        background: #2398d4;
         color: black;
         border: 1px solid black;
-        max-height: 220px;
+        max-height: 250px;
         right: 5px;
         top: 0px;
         font-size: 17px;
         font-weight: bold;
     }
 
+    .listItem>.closeIcon>svg {
+        fill: black;
+
+    }
+
+    .listItem>.closeIcon>svg:hover {
+        fill: rgba(255, 255, 255, 0.89);
+    }
+
     .listItem:hover {
-        color: white;
+        color: rgba(255, 255, 255, 0.89);
     }
 
     .sidebarIcon {

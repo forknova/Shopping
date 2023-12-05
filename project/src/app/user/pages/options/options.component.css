@@ -4,92 +4,100 @@
     max-width: 1200px;
     width: 100%;
     margin: auto;
-}
-
-td {
-    border-radius: 10px;
+    display: flex;
 }
 
 .option-tab {
-    background-color: lightgray;
-
+    width: 40%;
+    margin: 50px 40px;
 }
 
 .user {
     background-color: whitesmoke;
 }
 
-.options>* {
-    margin-bottom: 20px;
-}
-
-.logout-btn {
-    background-color: red;
-    cursor: pointer;
-
-}
-
-.logout-btn:hover {
-    background-color: rgb(114, 10, 10);
-}
-
 .account-info {
     display: flex;
     flex-direction: column;
-    text-align: center;
+    gap: 5px;
+    font-weight: 700;
+    font-size: 20px;
 }
 
-.account-info>* {
-    margin: auto;
+.account-info-photo {
+    height: 300px;
+    margin: 50px 40px;
+    width: calc(60% - 160px);
+    justify-content: center;
+    display: flex;
 }
 
-.account-info>input,
-button,
-select {
+.account-info-photo>img {
     width: 50%;
+    height: 100%;
+}
+
+.account-info>input {
+    width: 100%;
     margin-bottom: 20px;
-}
-
-.options {
-    background-color: rgb(180, 178, 178);
-    width: 25%;
-}
-
-
-.title {
-    text-align: center;
-    width: 100%;
-    font-size: x-large;
-    margin-bottom: 10px;
-}
-
-.options>div {
-    padding: 5px;
-    text-align: center;
-    width: 100%;
-    border: 1px solid black;
-    border-radius: 10px 10px 0px 0px;
+    padding: 10px 5px;
     box-sizing: border-box;
 }
 
-@media(max-width:700px) {
-
-    .account-info>input,
-    button,
-    select {
-        width: 75%;
-        margin-bottom: 20px;
-    }
-
+.account-info>button {
+    width: fit-content;
+    margin: 10px 0;
+    padding: 10px 50px;
+    background-color: #000;
+    color: white;
+    border: 0px;
+    box-sizing: border-box;
+    align-self: flex-end;
+    letter-spacing: 2px;
+    font-size: 13px;
+    font-weight: bold;
 }
 
-@media(max-width:400px) {
+.account-info>button:hover {
+    background-color: rgb(71, 69, 69);
+    cursor: pointer;
+}
 
-    .account-info>input,
-    button,
-    select {
-        width: 100%;
-        margin-bottom: 20px;
+.delete-container {
+    display: flex;
+    margin-top: 40px;
+    flex-direction: column;
+}
+
+.delete-btn {
+    background-color: red;
+    color: white !important;
+    margin: 10px;
+    padding: 10px 50px;
+    letter-spacing: 2px;
+    font-size: 13px;
+    font-weight: bold;
+    width: fit-content;
+}
+
+.delete-btn:hover {
+    background-color: rgb(128, 8, 8);
+}
+
+.title {
+    margin-left: 15px;
+    margin-bottom: 40px;
+    color: #000;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+@media(max-width:800px) {
+    .option-tab {
+        width: calc(100% - 80px);
     }
 
+    .account-info-photo {
+        display: none;
+    }
 }

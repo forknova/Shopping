@@ -1,21 +1,21 @@
 <div class="shop-banner">
     <div class="title">History</div>
 </div>
-<div class="orders-container">
-    <div class="orders-table">
-        <div class="table-titles">
-            <div>order id</div>
-            <div>quantity of products</div>
-            <div>totalCost</div>
-            <div>paymentMethod</div>
-            <div>date of purchase</div>
-        </div>
-        <div class="order" *ngFor="let order of data">
-            <div>{{order.id}}</div>
-            <div>{{order.prodnumb}}</div>
-            <div>{{order.totalCost}}</div>
-            <div>{{order.paymentMethod}}</div>
-            <div>{{order.date}}</div>
-        </div>
-    </div>
+<div class="cart-container">
+    <table class="orders-table">
+        <tr class="table-ths">
+            <th>order id</th>
+            <th>quantity of products</th>
+            <th>total Cost</th>
+            <th>payment Method</th>
+            <th>date of purchase</th>
+        </tr>
+        <tr class="order" *ngFor="let order of data" [routerLink]="'/user/one-order/'+order.id">
+            <td>{{order.id.substring(0,7)}}</td>
+            <td>{{order.prodnumb}}</td>
+            <td>${{order.totalCost}}</td>
+            <td>{{order.paymentMethod}}</td>
+            <td>{{order.date}}</td>
+        </tr>
+    </table>
 </div>

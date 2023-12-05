@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
-import boughtCartSchema from '../model/boughtCartSchema.js';
-
-import cartSchema from '../model/cartSchema.js';
-import productSchema from '../model/productSchema.js';
+import boughtCartSchema from '../model/BoughtCartSchema.js';
+import userService from '../services/userService.js'
+import cartSchema from '../model/CartSchema.js';
+import productSchema from '../model/ProductSchema.js';
 const Product = mongoose.model('Products', productSchema);
 const Cart = mongoose.model('ShoppingCarts', cartSchema);
 const Bought = mongoose.model('BoughtCarts', boughtCartSchema);
-import connection from "../connection.js"
+import  Connection  from "../connection.js" ;
 
 const addToBought = async (userId, paymentMethod, adress, date) => {
     try {
@@ -14,14 +14,26 @@ const addToBought = async (userId, paymentMethod, adress, date) => {
 
         if (cart) {
             let cartId = cart.id;
+            console.log(cartId)
             let products = cart.products;
-            // console.log("thissss"+products)
             let totalcost = cart.totalcost;
             let paymentmethod = paymentMethod;
-            if (retrieveQuantity(products)==true) {
+            let msg=[];
+            for (let i=0; i< products.length; i++ ){
+                
+            let product = await Product.findById(products[i].productId)
+                msg.push({"productId": products[i].productId,
+                        "color": products[i].color,
+                        "size": products[i].size,
+                        "quantity": products[i].quantity,
+                        "price":product.price
+            })
+            }
+            let quant = await retrieveQuantity(products)
+            if (quant==true) {
                 const newCart = new Bought({
                     userId,
-                    products,
+                    products:msg,
                     adress,
                     paymentmethod,
                     totalcost,
@@ -29,9 +41,11 @@ const addToBought = async (userId, paymentMethod, adress, date) => {
 
                 });
                 let save = await newCart.save();
-                await checkquantity()
+                // await checkquantity()
                 if (save) {
                     let deleted = await Cart.findByIdAndDelete(cartId)
+                    console.log( "AAAAAAAAAA")
+
                     if (deleted) {
                         return true
                     }
@@ -111,13 +125,28 @@ const retrieveQuantity = async (order) => {
         throw e;
     }
 };
- const getOneOrder = async (userId,orderId) =>{
-    try{
-        let order = await Bought.findById(orderId);
-        if(order && order.userId == userId){
-            return order
+ const getOneOrder = async (orderId) =>{
+    try{       
+         let order = await Bought.findById(orderId);
+         let msg=[{"id": order.id,"adress":order.adress, "paymentmethod":order.paymentmethod,"totalcost": order.totalcost, "date":order.date}]
+
+        console.log(order)
+            for (let i = 0; i < order.products.length; i++) {
+                let prodId = order.products[i].productId;
+        
+                let product = await Product.findById(prodId);
+                let price = order.products[i].price
+                let img = product.imgUrl
+                let prodname = product.name;
+                let color = order.products[i].color
+                let size = order.products[i].size
+                let quantity = order.products[i].quantity
+                // msg.push( {product: cart.products[i], description: desc, });
+                msg.push({ product: { productId: prodId, name: prodname, size: size, color: color, price: price , quantity: quantity,  img:img } });
+        
+              
         }
-            return false //wrong order Id or userId
+        return msg
         
     } catch (e) {
         console.log(e);
@@ -125,31 +154,56 @@ const retrieveQuantity = async (order) => {
     }
 
  }
- const checkquantity = async () => {
-    try{
-    let products = await Product.find()
-    for(let k=0; k<products.length; k++)
-    for(let i = 0 ; i< products[k].description.length ; i++){
-        for(let j=0 ; j< products[k].description[i].length; j++)
-        if(products[k].description[i][j][1] == 0){
-            products[k].description.splice([i][j])
-            let id = products[k].id
-            let updated = await Product.findByIdAndUpdate(id, {products:products})
-            if(!updated){
-                return false
-            }
-        }
+//  const checkquantity = async () => {
+//     try{
+//     let products = await Product.find()
+//     for(let k=0; k<products.length; k++)
+//     for(let i = 0 ; i< products[k].description.length ; i++){
+//         for(let j=0 ; j< products[k].description[i].length; j++)
+//         if(products[k].description[i][j][1] == 0){
+//             products[k].description.splice([i][j])
+//             let id = products[k].id
+//             let updated = await Product.findByIdAndUpdate(id, {products:products})
+//             if(!updated){
+//                 return false
+//             }
+//         }
 
-    }} catch (e) {
-        console.error(e);
+//     }} catch (e) {
+//         console.error(e);
+//         throw e;
+//     }
+// }
+
+const adminOrders = async (admin) =>{
+
+    try{
+        let isAdmin = await userService.isAdmin(admin)
+        console.log(isAdmin)
+    if(isAdmin){
+        let hist = await Bought.find()
+        let msg =[]
+        if (hist.length > 0) {
+            for (let i = 0 ; i<hist.length ; i++){
+                msg.push({"id": hist[i].id, "userId":hist[i].userId,"prodnumb":hist[i].products.length, "totalCost": hist[i].totalcost, "paymentMethod": hist[i].paymentmethod, "date": hist[i].date})
+          
+            }
+            return msg
+        }
+    }
+    else{
+        return false
+    }
+    }catch (e) {
+        console.log(e);
         throw e;
     }
 }
 
 
-
 export default {
     addToBought,
     getHistory,
-    getOneOrder
+    getOneOrder,
+    adminOrders
 }

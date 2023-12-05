@@ -1,17 +1,25 @@
 import mongoose from "mongoose";
-const connection = 
+import dotenv from "dotenv";
+dotenv.config();
 
-(async () => {
+const { MONGO_USER, MONGO_PASSWORD, MONGO_CLUSTER, MONGO_DATABASE } = process.env;
+
+const connection = (async () => {
     try {
-        await mongoose.connect("mongodb+srv://user1:hUVuQH7FzEB3AxM2@atlascluster.5feaxgy.mongodb.net/?retryWrites=true&w=majority", {
+        if (!MONGO_USER || !MONGO_PASSWORD || !MONGO_CLUSTER) {
+            throw new Error("MongoDB connection variables not provided");
+        }
 
-        });
+        const connectionString = `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}/${MONGO_DATABASE}?retryWrites=true&w=majority`;
+
+        await mongoose.connect(connectionString, {});
+
         console.log("Connected to MongoDB");
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
     }
 })();
 
-export default{
+export default {
     connection
 }

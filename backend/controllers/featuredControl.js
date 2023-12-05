@@ -3,9 +3,13 @@ import featuredService from '../services/featuredService.js';
 
 const addToFeatured = async (req,res) =>{
     try{
-        let adminId = req.body.adminId
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         let prodId = req.body.productId;
-        let added = featuredService.addToFeatured(adminId,prodId);
+        let added = featuredService.addToFeatured(user.userId,prodId);
         if(added){
             res.send(true)
         }
@@ -36,9 +40,13 @@ const getFeatured = async(req,res) =>{
 
 const removeOne = async (req,res) => {
     try{
-        let adminId = req.params.adminId;
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         let prodId = req.params.productId;
-        let deleted = await featuredService.removeOne(adminId,prodId)
+        let deleted = await featuredService.removeOne(user.userId,prodId)
             if(deleted){
                 res.send(true)
             }

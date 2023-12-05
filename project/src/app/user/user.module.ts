@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
 import { HomepageComponent } from './pages/homepage/homepage.component';
@@ -11,6 +12,7 @@ import { FooterComponent } from './footer/footer.component';
 import { OrdersComponent } from './pages/orders/orders.component';
 import { OneOrderComponent } from './pages/one-order/one-order.component';
 import { BuyComponent } from './pages/buy/buy.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -24,10 +26,12 @@ import { BuyComponent } from './pages/buy/buy.component';
     OrdersComponent,
     OneOrderComponent,
     BuyComponent,
+
   ],
   imports: [
     CommonModule,
     RouteRoutingModule,
+    ReactiveFormsModule,
   ]
 })
 export class UserModule { }

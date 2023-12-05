@@ -1,11 +1,15 @@
 import categoryService from '../services/categoryService.js';
 const addCategory = async (req, res) => {
     try {
-        let adminId = req.body.adminId;
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         let gender = req.body.gender;
         let type = req.body.type;
 
-        let added = await categoryService.addCategory(adminId, gender, type)
+        let added = await categoryService.addCategory(user.userId, gender, type)
         if (added) {
             res.send(true)
         }
@@ -22,7 +26,7 @@ const addCategory = async (req, res) => {
 const showAllcategories = async (req, res) => {
     try {
         const categories = await categoryService.getAllCategories();
-        console.log(categories)
+        // console.log(categories)
         res.send(categories);
     } catch (error) {
         console.error(error);

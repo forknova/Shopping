@@ -1,4 +1,3 @@
-
 import express from 'express';
 import userRoute from './routes/userRoute.js';
 import productRoute from './routes/productsRoutes.js';
@@ -12,7 +11,7 @@ import cors from 'cors';
 let app = express();
 
 app.use(cors())
-const PORT =  4000;
+const PORT = process.env.PORT || 4000;
 
 app.use(userRoute);
 app.use(productRoute)

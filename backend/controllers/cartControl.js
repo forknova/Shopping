@@ -1,8 +1,12 @@
 import cartService from '../services/cartService.js';
 const getCart= async (req,res) => {
     try{
-        let userId = req.query.userId
-        let cart = await cartService.getCart(userId)
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        let cart = await cartService.getCart(user.userId)
         if(cart){
             res.send(cart)
         }
@@ -18,14 +22,19 @@ catch (error) {
 }
 const addProduct = async(req,res) => {
 try{
+    
+    const user = req.user;
+    if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     let quantity = req.body.quantity;
     quantity = parseInt(quantity)
     let size = req.body.size;
     let color = req.body.color
-    let prodId = req.query.productId;
-    let userId = req.query.userId;
+    let prodId = req.body.productId;
+    console.log("thisssss"+user.userId)
     
-    let added = await cartService.addProduct(userId,prodId,color,size,quantity)
+    let added = await cartService.addProduct(user.userId,prodId,color,size,quantity)
     if(added){
         res.send(true)
     }
@@ -59,11 +68,16 @@ const totalCost= async (req, res) => {
 }
 const removeProduct= async(req,res) => {
     try{
+        
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         let prodId=req.query.productId;
-        let userId = req.query.userId;
         let color =req.query.color;
         let size = req.query.size;
-        let deleted = await cartService.removeProduct(userId,prodId,size,color);
+        let deleted = await cartService.removeProduct(user.userId,prodId,size,color);
         if(deleted){
             res.send(true)
         }
@@ -79,13 +93,18 @@ const removeProduct= async(req,res) => {
 }
 const editProduct = async(req, res) => {
     try{
+        
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         let quantity = req.body.quantity;
         quantity = parseInt(quantity)
         let size = req.body.size;
         let color = req.body.color
         let prodId = req.query.productId;
-        let userId = req.query.userId;
-        let edited = await cartService.editProduct(userId,prodId,size,color,quantity)
+        let edited = await cartService.editProduct(user.userId,prodId,size,color,quantity)
         console.log(edited)
         if(edited){
             res.send(true)

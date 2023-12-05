@@ -6,10 +6,7 @@ const productSchema = new Schema({
     price: Number,
     description: Array,
     categoryId:{ type: Schema.Types.ObjectId, ref: 'categories' },
-    img: {
-        filename: String,
-        url: String,
-    },
+    imgUrl: String,
     isDeleted: {
         type: Boolean,
         default: false

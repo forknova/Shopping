@@ -1,1 +1,27 @@
-<p>orders works properly!</p>
+<div class="table-container">
+    <table>
+        <tr>
+            <td>id</td>
+            <td>paymentMethod</td>
+            <td>date</td>
+            <td>prodnumb</td>
+            <td>totalCost</td>
+        </tr>
+        <tr *ngIf="(temp=='access denied'||temp=='error occured while getting data');else table">
+            <td>{{temp}}</td>
+            <td>{{temp}}</td>
+            <td>{{temp}} </td>
+            <td>{{temp}}</td>
+            <td>{{temp}}</td>
+        </tr>
+        <ng-template #table>
+            <tr *ngFor="let item of data">
+                <td>{{item.id}}</td>
+                <td>{{item.paymentMethod}}</td>
+                <td>{{item.date}}</td>
+                <td>{{item.prodnumb}}</td>
+                <td>{{item.totalCost}}</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

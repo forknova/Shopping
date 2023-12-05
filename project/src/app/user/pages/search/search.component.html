@@ -2,13 +2,12 @@
     <div class="title">SHOP</div>
 </div>
 <div class="search-page-container">
-    <form class="filters-container"
-        (ngSubmit)="search(category.value, searchField.value, filter.value, gender.value, '1')">
+    <form class="filters-container" (ngSubmit)="nthng()">
         <input #searchField type="text" placeholder="Search Products" />
         <select #category>
             <option value="">choose a category</option>
             <option value=""></option>
-            <option *ngFor="let category of categories">{{category}}</option>
+            <option *ngFor="let category of categories" [selected]="category==_category">{{category}}</option>
         </select>
         <select #gender>
             <option value="">sort by gender</option>
@@ -21,15 +20,14 @@
             <option value="dsc">price high to low</option>
             <option value="asc">price low to high</option>
         </select>
-        <button (click)="search(category.value, searchField.value, filter.value, gender.value, '1')">Search</button>
+        <button (click)="search(category.value, searchField.value, filter.value, gender.value, 0)">Search</button>
     </form>
     <div class="search-results-container">
-        <div class="nbr-Of-results">{{nbrOfPosts}} out of {{nbrOfPosts}}</div>
-        <div class="products-container">
+        <div class="nbr-Of-results">{{nbrOfPosts}} out of {{temp[2]}}</div>
+        <div class="products-container" *ngIf="data.length>0;else loadingCircle">
             <div *ngFor="let item of data" class="product">
                 <div class="product-photo">
-                    <!-- <img [src]="imgFolder+item.img.filename" alt="bag" loading="lazy" /> -->
-                    <img [src]="item.img.url" alt="bag" loading="lazy" />
+                    <img [src]="imgFolder+item.imgUrl" alt=" bag" loading="lazy" />
                     <div class="addToCart-icon" (click)="toggleShowProducts(item._id)">
                         +
                     </div>
@@ -40,27 +38,30 @@
                 </div>
                 <div class=" product-info">
                     <div class="product-name">{{item.name}}</div>
+                    <div class="product-sizes">sizes: {{handleSizes(item.description)}}</div>
                     <div class="product-price">{{item.price}}$</div>
                 </div>
             </div>
         </div>
         <div class="showProduct" *ngIf="showProduct">
             <div class="close-btn" (click)="toggleShowProducts('')">
-                CLOSE
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512">
+                    <path
+                        d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
             </div>
-            <div class="show-photo">
-                <img [src]="imgFolder+Product.img.filename" alt="" class="show-photo-img">
+            <div class="show-photo ">
+                <img [src]="imgFolder+Product.img" alt="" class="show-photo-img">
             </div>
             <div class="show-product-info">
                 <div class="show-product-title">{{Product.name}}</div>
-                <div class="show-product-price">${{Product.price}}</div>
                 <div class="show-product-colors">
                     <div>available Colors</div>
                     <span *ngFor="let color of colors" [style.background-color]="color"
                         (click)="handleChangeColor(color)" [ngClass]="{selectedColor:color==selectedColor}">
                     </span>
                 </div>
-                <div>
+                <div class="mb-20">
                     <div class="show-sizes-title">Sizes</div>
                     <div class="show-product-sizes">
                         <div *ngFor="let size of sizes" [ngClass]="{selectedSize:size==selectedSize}"
@@ -68,13 +69,33 @@
                         </div>
                     </div>
                 </div>
-                <div class="show-product-qty">
-                    <div class="qty-btn pb-2" (click)="handleQtyChange(-1)">-</div>
-                    <div class="qty">{{SelectedQuantity}}</div>
-                    <div class="qty-btn" (click)="handleQtyChange(1)">+</div>
+                <div class="mb-20">
+                    <div class="show-sizes-title">price</div>
+                    <div class="show-product-price">${{Product.price}}</div>
                 </div>
-                <div class=" show-addToCart-btn" (click)="addToCart()">Add to Cart</div>
+                <div class="show-product-qty">
+                    <div class="qty-container">
+                        <div class="qty-btn pb-2" (click)="handleQtyChange(-1)">-</div>
+                        <div class="qty">{{SelectedQuantity}}</div>
+                        <div class="qty-btn" (click)="handleQtyChange(1)">+</div>
+                    </div>
+                    <div class="show-addToCart-btn" (click)="addToCart()">Add to Cart</div>
+                </div>
+                <div class="notification" *ngIf="msg"
+                    [style.background-color]="msg=='added Successfully'?'#00a901':'red'">
+                    {{msg}}
+                </div>
             </div>
         </div>
+        <div class="nbr-of-pages">
+            <span *ngFor="let pageNbr of nbrOfPages" (click)="HandlePagechange(pageNbr)"
+                [ngClass]="{'selectedNbr': pageNbr==SelectedPage}">
+                {{pageNbr}}
+            </span>
+        </div>
+        <ng-template #loadingCircle>
+            <div class="loading-Icon"><img src="../../../../assets/images/Spinner-2.gif" alt="loading gif" /></div>
+        </ng-template>
+
     </div>
 </div>

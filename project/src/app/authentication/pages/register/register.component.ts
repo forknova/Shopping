@@ -20,7 +20,14 @@ export class RegisterComponent {
   })
   async onsubmit() {
     if (this.registerForm.get('fullname')?.valid && this.registerForm.get('email')?.valid && this.registerForm.get('password')?.valid) {
-      this.message = await this.authService.signUp(this.registerForm.value)
+      this.authService.signUp(this.registerForm.value).subscribe({
+        next: (res) => {
+          res ? this.message = "account created successfully!" : this.message = "email already registered";
+        },
+        error: () => {
+          this.message = "Error accured while creating your account"
+        }
+      })
     }
   }
   changenamebool() {

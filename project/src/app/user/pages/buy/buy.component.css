@@ -1,3 +1,72 @@
 .buy-container {
     margin-top: 100px;
+    min-height: 400px;
+    max-width: 1200px;
+    margin: 100px auto;
+}
+
+.inputs-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    width: 50%;
+    margin: auto;
+}
+
+input,
+select {
+    padding: 5px 10px;
+}
+
+.title {
+    margin-left: 15px;
+    margin-bottom: 40px;
+    color: #000;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+
+}
+
+.btn-container {
+    display: flex;
+}
+
+.buy-btn {
+    width: fit-content;
+    margin: 10px 0;
+    padding: 10px 50px;
+    background-color: #000;
+    color: white;
+    border: 0px;
+    box-sizing: border-box;
+    align-self: flex-end;
+    letter-spacing: 2px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.buy-btn:hover {
+    background-color: rgb(71, 69, 69);
+    cursor: pointer;
+}
+
+.notification {
+    padding: 10px 5px;
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #00a800;
+    margin: auto;
+    text-align: center;
+}
+
+@media(max-width:500px) {
+    .buy-btn {
+        width: 100% !important;
+    }
+
+    .inputs-container {
+        width: 90%;
+    }
 }

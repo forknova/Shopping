@@ -1,5 +1,8 @@
 import bcrypt from 'bcrypt';
 import userService from '../services/userService.js';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const register = async (req,res) => {
 try{
     const { fullname, email, password } = req.body;
@@ -23,27 +26,24 @@ try{
 };
 
 
+
+
+
+
+
 const login = async (req,res) => {
 try{
-        let email= req.query.email
-        let password = req.query.password
+        let email= req.body.email
+        let password = req.body.password
         console.log(password)
         
         let available = await userService.availableUser(email, password) //id taba3 l person
       
-        if(available!=false){
-            if(await userService.isAdmin(available)){
-                
-                res.send({"result":"A", "id":available}) //this is an admin
-               
-            }
-            else{
-                res.send({"result":"U", "id":available}) //this is a user
-             
-            }
+        if(available){
+          res.json(available)
         }
         else if (available == false){
-            res.send(false) // wrong email or password
+            res.status(406).send(false) // wrong email or password
            
         }
     }
@@ -54,44 +54,46 @@ try{
 
 }
 
-const showAllUsers = async(req,res) => {
+const showAllUsers = async (req, res) => {
+    try {
+        // Extract user information from the token
+        const user = req.user;
 
-     try{
-       let id = req.query.id;
-      
-         let done = await userService.isAdmin(id)
-        
-        
-         if(done == true || done == 'main admin'){
-          let users = await userService.getAllUsers(id)
-          if(users){
-            res.send(users)
-          }
-          else{
-            res.send({"result":"user array is empty"})
-          }
-            
-           
-         }
-         else if (!done){
-            res.send(false) 
-         }
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
         }
-        catch (error) {
-            console.error(error);
-            res.status(500).send("Internal Server Error");
+
+        const isAdmin = await userService.isAdmin(user.userId);
+
+        if (isAdmin) {
+            const users = await userService.getAllUsers(user.userId);
+
+            if (users) {
+                res.send(users);
+            } else {
+                res.send({ result: 'user array is empty' });
+            }
+        } else {
+            res.send(false);//not an admin
         }
- }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 
 
  const deleteUser = async(req, res) => {
 
     try{
-        
-         let adminId= req.query.adminId
+        const admin = req.user;
+
+
+        if(admin){
          let userId = req.query.userId
-         if(userId && adminId){
-         let isAdmin = await userService.isAdmin(adminId)
+         if(userId){
+         let isAdmin = await userService.isAdmin(admin.userId)
          if(isAdmin) {
          let deleted = await userService.deleteUser(userId)
          if(deleted){
@@ -105,6 +107,9 @@ const showAllUsers = async(req,res) => {
             res.send(false) //not an admin
         }
          }}
+         else if (!admin) {
+             return res.status(401).json({ error: 'Unauthorized' });
+         }}
          catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -114,14 +119,21 @@ const showAllUsers = async(req,res) => {
     const showInfo = async(req, res) => {
 
         try{
-            let userId = req.query.userId;
-            let info = userService.showInfo(userId);
+            const user = req.user;
+            if (user) {
+            let info = await userService.showInfo(user.userId);
+            console.log(info)
              if(info){
-                return info
+                res.send(info) 
              }
              else if( info == false){
-                return false
+                res.send(false)
              }
+            }
+
+        else {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         }  catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -132,8 +144,12 @@ const showAllUsers = async(req,res) => {
     const removeOne = async(req, res) => {
 
         try{
-            let userId = req.query.userId;
-            let deleted = userService.deleteUser(userId);
+            const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+            let deleted = userService.deleteUser(user.userId);
             if(deleted){
                 res.send(true)
             }
@@ -149,18 +165,23 @@ const showAllUsers = async(req,res) => {
     const updateOne = async(req, res) => {
 
         try{
-            let userId = req.body.userId;
+            const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
             let email = req.body.email;
             let password = req.body.password;
             const saltRounds = 10;
             const salt = bcrypt.genSaltSync(saltRounds);  
             const hash = bcrypt.hashSync(password, salt); 
-            let updated = await userService.editUser(userId,email,hash)
+            console.log(hash)
+            let updated = await userService.editUser(user.userId,email,hash)
             if(updated){
                 res.send(true)
             }
             else if (updated == false) {
-                res.send(false) //no user with this id
+                res.send(false) 
             }
         } catch (error) {
             console.error(error);
@@ -168,7 +189,8 @@ const showAllUsers = async(req,res) => {
         }
     }
 
-    
+
+   
 
 
 

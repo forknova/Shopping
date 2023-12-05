@@ -1,9 +1,13 @@
 import mongoose, { set } from "mongoose";
 import bcrypt from 'bcrypt';
-import userSchema from '../model/userSchema.js';
-import connection from "../connection.js"
+import userSchema from '../model/UserSchema.js';
+import tokenSchema from '../model/RefreshTokenSchema.js';
+import jwt from "jsonwebtoken"
+import tokenService from "../services/tokenService.js"
 
 const User = mongoose.model('Users', userSchema);
+const RefreshTokens = mongoose.model('RefreshTokens', tokenSchema );
+import  Connection  from "../connection.js" ;
 
 const register= async(fullname, email, password) =>{
   
@@ -60,6 +64,7 @@ const getAllUsers = async(id) => {
        let userInfos = users.map(user => {
         return { id: user.id, fullname: user.fullname, email: user.email, role: user.role };
     })
+    return userInfos
     }
       
     catch (e) {
@@ -67,23 +72,45 @@ const getAllUsers = async(id) => {
         throw e
     }
 }
-const availableUser = async(email,password) => {
+const availableUser = async (email, password) => {
+  try {
+    // Find user by email
+    let user = await User.findOne({ email: email });
 
-    try{
-        let user = await User.findOne({email: email})
-        let hash = user.password;
-        if(await bcrypt.compare(password, hash)){
-            if(user.isDeleted==true){
-                return false
-            }
-            return user.id
-        }
-        else{
-            return false
-        }
-        
-      
+    if (!user) {
+      // Handle case when user is not found
+      return false;
     }
+
+    // Compare passwords
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (isPasswordValid) {
+      if (user.isDeleted) {
+        // Handle case when user is deleted
+        return false;
+      }
+
+      // Generate tokens
+      const accessToken = tokenService.generateAccessToken(user);
+      const refreshToken = jwt.sign(
+        { userId: user.id, role: user.role },
+        process.env.REFRESH_TOKEN_SECRET
+      );
+
+let userId = user.id
+let token = refreshToken
+      // Save refresh token to the database
+      const newToken = new RefreshTokens({ token, userId });
+      await newToken.save();
+
+      // Return tokens
+      return { accessToken, refreshToken };
+    } else {
+      // Handle case when password is invalid
+      return false;
+    }
+  }
     catch (e) {
         console.log(e);
         throw e;
@@ -100,7 +127,8 @@ const availableUser = async(email,password) => {
           else{
               return false
           }
-     }
+        }
+     
      catch (e) {
         console.log(e);
         throw e
@@ -154,4 +182,4 @@ export default {
     editUser,
     deleteUser,
     showInfo
-};
+}

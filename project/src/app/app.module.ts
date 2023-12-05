@@ -6,6 +6,8 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AdminModule } from './admin/admin.module';
 import { UserModule } from './user/user.module';
+import { tokenInterceptor } from './tokenHttpInterceptor'
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,7 +20,9 @@ import { UserModule } from './user/user.module';
     AdminModule,
     UserModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: tokenInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

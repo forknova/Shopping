@@ -10,24 +10,17 @@ import { UserService } from '../../services/user.service';
 export class CartComponent {
   msg: string = "";
   products: any = [[], 0];
-  Foldername: string = '../../../../assets/product-images/'
-  userId: any = localStorage.getItem("id");
+  Foldername: string = 'http://localhost:4000/';
   constructor(private userService: UserService, private router: Router) { }
-
   changeSizes(color: string, index: number, size: string, P_id: string, qty: any) {
+    //when a new color is selected, we change the options of the select tag 
+    //to the available sizes for the new color
+    //this function returns a new array containing the new sizes
     let temp: string[] = [];
     this.save(color, size, P_id, qty);
-    //we have the index on which the product we want resides, so we get to that product and access the description property
-    //which contains and array of the colors that this product have as the first element and up to 4 arrays containing 
-    //the sizes available and the qty of each size
     for (let i = 0; i < (this.products[0][index].description).length; i++) {
       if (this.products[0][index].description[i][0] == color) {
-        //after we find the array in description that contains the color we need on the first index
-        //we loop over this array and start from the index 1
-        //on each iteration we get the value on the first index of the array we are accessing,that value is the 
-        //one of the sizes we have for this specific color on this specific product
         for (let j = 1; j < this.products[0][index].description[i].length; j++) {
-          // we push the size into a temporary array containing all sizes available for this color of this product 
           temp.push(this.products[0][index].description[i][j][0]);
         }
         return temp;
@@ -37,12 +30,13 @@ export class CartComponent {
   }
 
   getProducts() {
-    this.userService.getCart(this.userId)
+    //this is called on NgOnInit when the component is the rendered
+    //it get all the products and puts them in the products array of this class
+    this.userService.getCart()
       .subscribe({
         next: (e) => {
           !e || JSON.stringify(e) == '[]' ? (this.msg = "you cart is empty! add some products from the shop to your cart", this.clearMsg(), this.products = [[], 0]) : (this.products = e, console.log(e));
-        }
-        ,
+        },
         error: () => {
           this.msg = "an error occured while getting your data"; this.clearMsg()
         }
@@ -50,33 +44,43 @@ export class CartComponent {
   }
 
   save(Selectedcolor: string, SelectedSize: string, P_id: string, qty: any) {
-    //edits products
-    if (SelectedSize) this.userService.EditCart(this.userId, Selectedcolor, SelectedSize, P_id, qty)
+    //edits products and fills a message that dissapears after 4 seconds 
+    //the message contains either an error or a cart edited successfully message
+    if (SelectedSize) this.userService.EditCart(Selectedcolor, SelectedSize, P_id, qty)
       .subscribe({
-        next: (e) => e ? (this.msg = "cart edited successfully", this.clearMsg()) : (this.msg = "we had a problem editing cart", this.clearMsg()),
+        next: (e) => e ? (this.msg = "cart edited successfully", this.clearMsg(), this.getProducts()) : (this.msg = "we had a problem editing cart", this.clearMsg()),
         error: (e) => (this.msg = "we had a problem editing cart", this.clearMsg()),
       });
   }
   clearMsg() {
+    //this is called when a message is created so it is called after 4seconds to empty the message variable
+    //when the msg is empty the ngIf won't work therefore the tag containing the msg dissapears from the screen
     setTimeout(() => { this.msg = "" }, 4000)
-  }
-  ngOnInit(): void {
-    this.getProducts();
-    if (localStorage.getItem("role") != "user") {
-      this.router.navigateByUrl('/login')
-    }
   }
 
   calculatesubtotal(qty: any, price: number, Selectedcolor: string, SelectedSize: string, P_id: string) {
+    //this is called when a change is made on the inputs of any product, its calls the save function 
+    //and it returns the new price of that product
     this.save(Selectedcolor, SelectedSize, P_id, qty);
     return (qty * price)
   }
 
   removeFromCart(P_id: string, size: string, color: string) {
-    this.userService.removeFromCart(this.userId, P_id, size, color)
+    //this removes products from the cart
+    this.userService.removeFromCart(P_id, size, color)
       .subscribe({
         next: (e) => { e ? (this.msg = "product removed successfully", this.clearMsg(), this.getProducts()) : (this.msg = "we had an error while removing the product", this.clearMsg()) },
         error: () => (this.msg = "we had an error while removing the product", this.clearMsg())
       })
+  }
+
+  ngOnInit(): void {
+    //we get all the products when the component is rendered
+    this.getProducts();
+    //this is in the case of a user going from the search page while on a product pop up straight 
+    //the another page
+    if (document.body.style.overflowY == 'hidden') {
+      document.body.style.overflowY = 'scroll';
+    }
   }
 }
